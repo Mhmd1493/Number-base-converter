@@ -1,0 +1,101 @@
+Imports System.Text.RegularExpressions
+Public Class Converter
+
+    Private Sub Converter_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+        Label3.Text = ""
+        Label6.Text = ""
+    End Sub
+
+    Private Sub Button3_Click(sender As System.Object, e As System.EventArgs) Handles Button3.Click
+        Dim Decimalpattern As String = "[0-9]"
+        Dim Binarypattern As String = "[01]"
+        Dim Octalpattern As String = "[0-7]"
+        If (IsNumeric(TextBox1.Text) And TextBox1.Text <> "") Then
+            If ComboBox1.Text = "Decimal (Base 10)" Then
+                Dim data As Integer = CInt(TextBox1.Text)
+                Dim regex As Regex = New Regex(Decimalpattern)
+                Dim match As Match = regex.Match(TextBox1.Text)
+                If match.Success Then
+                    'here we test the range [0-9]
+                    If (ComboBox2.Text = "Binary (Base 2)") Then
+                        Dim value = DecimalToBinary(data)
+                        Label6.Text = value.ToString
+                    ElseIf (ComboBox2.Text = "Octal (Base 8)") Then
+                        Label6.Text = Oct(data)
+                    ElseIf (ComboBox2.Text = "Decimal (Base 10)") Then
+                        Label6.Text = data
+                    End If
+
+                Else : MessageBox.Show("Only digits from 0 to 9 are allowed")
+                End If
+
+            ElseIf ComboBox1.Text = "Binary (Base 2)" Then
+
+                Dim regex As Regex = New Regex(Binarypattern)
+                Dim match As Match = regex.Match(TextBox1.Text)
+                If match.Success Then
+                    'here we test the range [01]
+                    Dim data As Integer = Convert.ToInt32(TextBox1.Text, 2)
+
+                    If (ComboBox2.Text = "Binary (Base 2)") Then
+                        Dim value = DecimalToBinary(data)
+                        Label6.Text = value.ToString
+                    ElseIf (ComboBox2.Text = "Octal (Base 8)") Then
+                        Label6.Text = Oct(data)
+                    ElseIf (ComboBox2.Text = "Decimal (Base 10)") Then
+                        Label6.Text = data
+                    End If
+                Else : MessageBox.Show("Only digits from 0 to 1 are allowed")
+                End If
+
+            ElseIf ComboBox1.Text = "Octal (Base 8)" Then
+                Dim regex As Regex = New Regex(Octalpattern)
+                Dim match As Match = regex.Match(TextBox1.Text)
+                If match.Success Then
+                    'here we test the range [0-7]
+                    Dim data As Integer = Convert.ToInt32(TextBox1.Text, 8)
+                    '
+
+                    If (ComboBox2.Text = "Binary (Base 2)") Then
+                        Dim value = DecimalToBinary(data)
+                        Label6.Text = value.ToString
+                    ElseIf (ComboBox2.Text = "Octal (Base 8)") Then
+                        Label6.Text = Oct(data)
+                    ElseIf (ComboBox2.Text = "Decimal (Base 10)") Then
+                        Label6.Text = data
+                    End If
+
+                Else : MessageBox.Show("Only digits from 0 to 7 are allowed")
+                End If
+
+            Else : MessageBox.Show("Please enter a base.")
+            End If
+        Else : MessageBox.Show("Please enter a number.")
+        End If
+    End Sub
+    Private Sub Button1_Click(sender As System.Object, e As System.EventArgs) Handles Button1.Click
+        ComboBox2.Text = "Select the base"
+        ComboBox1.Text = "Select the base"
+        TextBox1.Text = ""
+        Label6.Text = ""
+        TextBox1.Focus()
+    End Sub
+    Public Shared Function DecimalToBinary(dec As Integer) As String
+        If dec < 1 Then Return "0"
+
+        Dim binStr As String = String.Empty
+
+        While dec > 0
+            binStr = binStr.Insert(0, (dec Mod 2).ToString())
+            dec = Int(dec / 2)
+        End While
+        Return binStr
+    End Function
+
+
+    Private Sub Button2_Click(sender As System.Object, e As System.EventArgs) Handles Button2.Click
+        Dim A As String = ComboBox2.Text
+        ComboBox2.Text = ComboBox1.Text
+        ComboBox1.Text = A
+    End Sub
+End Class
